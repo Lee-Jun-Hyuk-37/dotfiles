@@ -59,10 +59,14 @@ set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8,euc-kr
 
+" set shell=cmd.exe
 set shell=powershell.exe
 set shellcmdflag=-NoLogo\ -NoProfile\ -Command
 set shellquote=\"
 set shellxquote=
+if exists('g:plugs')
+    set shell=cmd.exe
+endif
 
 "Plugin settings
 call plug#begin('~/vimfiles/plugged')
@@ -70,6 +74,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
 Plug 'dense-analysis/ale'
 Plug 'mhinz/vim-signify'
+Plug 'tpope/vim-fugitive'
 call plug#end()
 
 " ALE settings
@@ -83,10 +88,11 @@ let g:ale_virtualtext_cursor = 1
 let g:ale_linters = {'python': ['flake8'],}
 let g:ale_fixers = {'python': ['black'],}
 
-" vim-signify settings
-let g:signify_sign_add = '+'
-let g:signify_sign_change = '~'
-let g:signify_sign_delete = '-'
+" vim-signify and vim-fugitive settings
+highlight SignifySignAdd    ctermfg=22 ctermbg=10  guifg=#003300 guibg=#00ff5f
+highlight SignifySignChange ctermfg=17 ctermbg=12  guifg=#001a33 guibg=#5fafff
+highlight SignifySignDelete ctermfg=52 ctermbg=9   guifg=#330000 guibg=#ff5f5f
+set diffopt+=vertical
 
 if exists('$WT_SESSION') || &term =~ 'xterm'
     let &t_EI = "\e[2 q"    " normal mode: block
