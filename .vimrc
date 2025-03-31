@@ -5,11 +5,6 @@ set secure
 
 let g:netrw_liststyle=3     " Explore tree type
 
-if &term =~ 'xterm'
-  let &t_EI = "\e[2 q"    " normal mode: block
-  let &t_SI = "\e[6 q"    " insert mode: bar
-endif
-
 inoremap jk <esc>
 inoremap kj <esc>
 nnoremap <C-s> :w<CR>
@@ -18,6 +13,7 @@ cnoreabbrev <expr> vs getcmdtype() == ':' && getcmdline() == 'vs' ? 'vs \| wincm
 cnoreabbrev <expr> sp getcmdtype() == ':' && getcmdline() == 'sp' ? 'sp \| wincmd j' : 'sp'
 
 set mouse=a
+set backspace=indent,eol,start
 
 set nocompatible
 set number
@@ -53,7 +49,7 @@ filetype plugin indent on
 syntax on
 
 if has('termguicolors')
-      set termguicolors
+    set termguicolors
 endif
 
 colorscheme habamax
@@ -77,6 +73,8 @@ let g:ale_fix_on_save = 1
 let g:ale_completion_enabled = 1
 let g:ale_virtualtext_cursor = 1
 " flake8, black, pylsp or pyright need to be installed
+" pip install flake8 black python-lsp-server
+" check with :echo exepath('')
 let g:ale_linters = {'python': ['flake8'],}
 let g:ale_fixers = {'python': ['black'],}
 
@@ -84,3 +82,8 @@ let g:ale_fixers = {'python': ['black'],}
 let g:signify_sign_add = '+'
 let g:signify_sign_change = '~'
 let g:signify_sign_delete = '-'
+
+if &term =~ 'xterm'
+    let &t_EI = "\e[2 q"    " normal mode: block
+    let &t_SI = "\e[6 q"    " insert mode: bar
+endif
