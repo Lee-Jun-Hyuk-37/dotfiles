@@ -52,6 +52,10 @@ set clipboard=unnamedplus
 filetype plugin indent on
 syntax on
 
+if has('termguicolors')
+      set termguicolors
+endif
+
 colorscheme habamax
 " colorscheme slate
 
