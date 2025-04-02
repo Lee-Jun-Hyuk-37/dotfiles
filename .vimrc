@@ -41,6 +41,7 @@ set nobackup
 set noundofile
 
 set wrap
+set breakindent
 set scrolloff=5
 set sidescrolloff=5
 
