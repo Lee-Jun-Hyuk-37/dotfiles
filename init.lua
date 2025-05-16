@@ -104,6 +104,7 @@ local function get_or_open_terminal()
   end)
   return vim.b.terminal_job_id
 end
+
 -- Normal mode: run current line
 vim.keymap.set('n', '<CR>', function()
   local job_id = get_or_open_terminal()
@@ -116,6 +117,7 @@ vim.keymap.set('n', '<CR>', function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
   end)
 end, { desc = 'Send current line to terminal python' })
+
 -- Visual mode: run selected lines
 vim.keymap.set('v', '<CR>', function()
   local bufnr = vim.api.nvim_get_current_buf()
@@ -128,6 +130,7 @@ vim.keymap.set('v', '<CR>', function()
     for _, line in ipairs(lines) do
       vim.fn.chansend(job_id, line .. '\r\n')
     end
+    vim.fn.chansend(job_id, '\r\n')
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n>]], true, false, true), 't', false)
