@@ -7,6 +7,9 @@ vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { noremap = true })
 -- easy python run
 vim.keymap.set('c', 'py', '!python %', { noremap = true })
 
+-- easy directory move
+vim.keymap.set('c', 'C', 'cd %:p:h', { noremap = true })
+
 -- netrw
 vim.keymap.set('c', 'E', 'Ex', { noremap = true })
 
