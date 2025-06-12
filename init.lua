@@ -431,6 +431,9 @@ require('lazy').setup({
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
+      if vim.g.vscode then
+        return
+      end
       require('mason-lspconfig').setup {
         ensure_installed = { 'pyright' },
         automatic_installation = true,
@@ -861,13 +864,13 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       -- jh memorize: (visual mode)sa, (normal mode)sd, (normal mode)sr -> add, delete, replace
-      require('mini.surround').setup({
+      require('mini.surround').setup {
         custom_surroundings = {
           ['('] = { output = { left = '(', right = ')' } },
           ['['] = { output = { left = '[', right = ']' } },
           ['{'] = { output = { left = '{', right = '}' } },
         },
-      })
+      }
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
