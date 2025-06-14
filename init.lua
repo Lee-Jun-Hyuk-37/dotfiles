@@ -43,6 +43,24 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- H-M, L-M midpoint
+vim.keymap.set('n', 'HH', function()
+  vim.cmd 'normal! H'
+  local high = vim.fn.line '.'
+  vim.cmd 'normal! M'
+  local mid = vim.fn.line '.'
+  local target = math.floor((high + mid) / 2)
+  vim.cmd('normal! ' .. target .. 'G')
+end, { noremap = true, silent = true, desc = 'Move to H-M midpoint' })
+vim.keymap.set('n', 'LL', function()
+  vim.cmd 'normal! L'
+  local low = vim.fn.line '.'
+  vim.cmd 'normal! M'
+  local mid = vim.fn.line '.'
+  local target = math.floor((low + mid) / 2)
+  vim.cmd('normal! ' .. target .. 'G')
+end, { noremap = true, silent = true, desc = 'Move to L-M midpoint' })
+
 -- for useful terminal
 vim.api.nvim_create_user_command('T', function()
   vim.cmd 'split | terminal'
@@ -175,7 +193,7 @@ vim.opt.signcolumn = 'yes'
 vim.opt.updatetime = 250
 
 -- Decrease mapped sequence wait time
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 150
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
