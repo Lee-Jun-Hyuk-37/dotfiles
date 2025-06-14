@@ -8,4 +8,27 @@
     "editor.stickyScroll.enabled": false,
     "vscode-neovim.neovimExecutablePaths.windows": "C:\\Users\\user\\scoop\\shims\\nvim.exe",
     "vscode-neovim.neovimInitVimPaths.windows": "C:\\Users\\user\\AppData\\Local\\nvim\\init.lua",
+    "vscode-neovim.compositeKeys": {
+        // Use lua to execute any logic
+        "jk": {
+            "command": "vscode-neovim.lua",
+            "args": [
+                [
+                    "local code = require('vscode')",
+                    "code.action('vscode-neovim.escape')",
+                    "code.action('workbench.action.files.save')",
+                ],
+            ],
+        },
+        "kj": {
+            "command": "vscode-neovim.lua",
+            "args": [
+                [
+                    "local code = require('vscode')",
+                    "code.action('vscode-neovim.escape')",
+                    "code.action('workbench.action.files.save')",
+                ],
+            ],
+        },
+    },
 }
