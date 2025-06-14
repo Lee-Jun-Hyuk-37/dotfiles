@@ -1,0 +1,15 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "ctrl+d",
+        "command": "extension.multiCommand.execute",
+        "args": { "command": "CtrlDCombo" },
+        "when": "editorTextFocus && neovim.mode == 'normal'"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "extension.multiCommand.execute",
+        "args": { "command": "CtrlFCombo" },
+        "when": "editorTextFocus && neovim.mode == 'normal'"
+    },
+]

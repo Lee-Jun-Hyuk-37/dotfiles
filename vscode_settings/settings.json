@@ -1,7 +1,4 @@
 {
-    "[markdown]": {
-        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
-    },
     "extensions.experimental.affinity": {
         "asvetliakov.vscode-neovim": 1
     },
@@ -30,5 +27,38 @@
                 ],
             ],
         },
+    },
+    "multiCommand.commands": [
+        {
+            "command": "CtrlDCombo",
+            "sequence": [
+                {
+                    "command": "vscode-neovim.ctrl-d",
+                },
+                {
+                    "command": "vscode-neovim.send",
+                    "args": "L"
+                },
+            ]
+        },
+        {
+            "command": "CtrlFCombo",
+            "sequence": [
+                {
+                    "command": "vscode-neovim.ctrl-u",
+                },
+                {
+                    "command": "vscode-neovim.send",
+                    "args": "H"
+                },
+            ]
+        },
+    ],
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false,
+        "jsonc": false
     },
 }
