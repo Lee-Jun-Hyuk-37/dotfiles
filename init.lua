@@ -19,20 +19,6 @@ vim.g.netrw_liststyle = 3
 -- save with ctr+s
 vim.keymap.set({ 'n', 'i', 'v' }, '<C-s>', '<Esc>:w<CR>', { noremap = true, silent = true })
 
--- H, L keymap: always consider scrolloff
-vim.keymap.set('n', 'H', function()
-  local scrolloff = vim.opt.scrolloff:get()
-  local first_line = vim.fn.line 'w0'
-  local target_line = first_line + scrolloff
-  vim.cmd('normal! ' .. target_line .. 'G')
-end, { noremap = true, silent = true, desc = 'Move to top + scrolloff' })
-vim.keymap.set('n', 'L', function()
-  local scrolloff = vim.opt.scrolloff:get()
-  local last_line = vim.fn.line 'w$'
-  local target_line = last_line - scrolloff
-  vim.cmd('normal! ' .. target_line .. 'G')
-end, { noremap = true, silent = true, desc = 'Move to bottom - scrolloff' })
-
 -- half page up keymap
 vim.keymap.set({ 'n', 'v' }, '<C-f>', '<C-u>', { noremap = true, silent = true })
 vim.api.nvim_create_autocmd({ 'BufEnter', 'WinEnter', 'FileType' }, {
@@ -206,7 +192,7 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+-- vim.opt.scrolloff = 10
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
