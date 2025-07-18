@@ -102,8 +102,9 @@ vim.api.nvim_create_user_command('Gitdiff', function()
   vim.cmd 'diffthis'
 end, {})
 
--- Neotree open
-vim.keymap.set('n', '<Space>e', ':Neotree toggle<CR>', { noremap = true, silent = true, desc = 'Neovim toggle' })
+-- Neotree open and focus
+vim.keymap.set('n', '<Space>E', ':Neotree toggle<CR>', { noremap = true, silent = true, desc = 'Neovim toggle' })
+vim.keymap.set('n', '<Space>e', ':Neotree focus<CR>', { noremap = true, silent = true, desc = 'Neovim focus' })
 
 -- python REPL: auto terminal create or find existing terminal
 local function get_or_open_terminal()
