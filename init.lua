@@ -16,6 +16,10 @@ vim.keymap.set('c', 'E', 'Ex', { noremap = true })
 -- tree style
 vim.g.netrw_liststyle = 3
 
+-- Comment with vscode keymap
+vim.keymap.set('n', '<C-_>', 'gcc', { noremap = false, remap = true, desc = 'Toggle comment line' })
+vim.keymap.set('v', '<C-_>', 'gc',  { noremap = false, remap = true, desc = 'Toggle comment selection' })
+
 -- save with ctr+s
 vim.keymap.set({ 'n', 'i', 'v' }, '<C-s>', '<Esc>:w<CR>', { noremap = true, silent = true })
 
@@ -102,60 +106,73 @@ vim.api.nvim_create_user_command('Gitdiff', function()
   vim.cmd 'diffthis'
 end, {})
 
--- Neotree open and focus
-vim.keymap.set('n', '<Space>E', ':Neotree toggle<CR>', { noremap = true, silent = true, desc = 'Neovim toggle' })
-vim.keymap.set('n', '<Space>e', ':Neotree focus<CR>', { noremap = true, silent = true, desc = 'Neovim focus' })
+-- Neotree open/close and focus/unfocus
+vim.keymap.set('n', '<Space>E', function()
+  vim.cmd('Neotree toggle')
+  vim.cmd('wincmd =')
+end, { noremap = true, silent = true, desc = 'Neovim toggle and resize windows' })
+-- Check if the current window's filetype is neo-tree, then act conditionally
+vim.keymap.set('n', '<Space>e', function()
+  local buftype = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+  if buftype == "neo-tree" then
+    vim.cmd('wincmd p')
+  else
+    vim.cmd('Neotree focus')
+  end
+end, { noremap = true, silent = true, desc = 'Neotree focus or previous window' })
 
 -- python REPL: auto terminal create or find existing terminal
--- local function get_or_open_terminal()
---   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
---     if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buftype == 'terminal' then
---       local job_id = vim.b[buf].terminal_job_id
---       if job_id then
---         print(job_id)
---         return job_id
---       end
---     end
---   end
---   vim.cmd 'sp | term python'
---   vim.schedule(function()
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
---   end)
---   return vim.b.terminal_job_id
--- end
---
--- -- Normal mode: run current line
--- vim.keymap.set('n', '<CR>', function()
---   local job_id = get_or_open_terminal()
---   local line = vim.fn.getline '.'
---   vim.fn.chansend(job_id, line .. '\r\n')
---   vim.schedule(function()
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n>]], true, false, true), 't', false)
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
---   end)
--- end, { desc = 'Send current line to terminal python' })
---
--- -- Visual mode: run selected lines
--- vim.keymap.set('v', '<CR>', function()
---   local bufnr = vim.api.nvim_get_current_buf()
---   local job_id = get_or_open_terminal()
---   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'x', false)
---   vim.schedule(function()
---     local start_line = vim.fn.getpos("'<")[2] - 1
---     local end_line = vim.fn.getpos("'>")[2]
---     local lines = vim.api.nvim_buf_get_lines(bufnr, start_line, end_line, false)
---     for _, line in ipairs(lines) do
---       vim.fn.chansend(job_id, line .. '\r\n')
---     end
---     vim.fn.chansend(job_id, '\r\n')
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n>]], true, false, true), 't', false)
---     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
---   end)
--- end, { desc = 'Send visual selection to terminal python' })
+local function get_or_open_terminal()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buftype == 'terminal' then
+      local job_id = vim.b[buf].terminal_job_id
+      if job_id then
+        print(job_id)
+        return job_id
+      end
+    end
+  end
+  vim.cmd 'sp | term python'
+  vim.schedule(function()
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
+  end)
+  return vim.b.terminal_job_id
+end
+-- Normal mode: run current line
+vim.keymap.set('n', '<CR>', function()
+  if vim.bo.filetype ~= "python" then return end
+  local job_id = get_or_open_terminal()
+  local line = vim.fn.getline '.'
+  vim.fn.chansend(job_id, line .. '\r\n')
+  vim.schedule(function()
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n>]], true, false, true), 't', false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
+    vim.api.nvim_feedkeys('j', 'n', false)
+  end)
+end, { desc = 'Send current line to terminal python' })
+-- Visual mode: run selected lines
+vim.keymap.set('v', '<CR>', function()
+  if vim.bo.filetype ~= "python" then return end
+  local bufnr = vim.api.nvim_get_current_buf()
+  local job_id = get_or_open_terminal()
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'x', false)
+  vim.schedule(function()
+    local start_line = vim.fn.getpos("'<")[2] - 1
+    local end_line = vim.fn.getpos("'>")[2]
+    local lines = vim.api.nvim_buf_get_lines(bufnr, start_line, end_line, false)
+    for _, line in ipairs(lines) do
+      vim.fn.chansend(job_id, line .. '\r\n')
+    end
+    vim.fn.chansend(job_id, '\r\n')
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n>]], true, false, true), 't', false)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
+    vim.api.nvim_feedkeys('j', 'n', false)
+  end)
+end, { desc = 'Send visual selection to terminal python' })
 
 ---------- jh custom keymap end ----------
 
