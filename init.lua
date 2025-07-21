@@ -121,14 +121,13 @@ vim.keymap.set('n', '<Space>e', function()
   end
 end, { noremap = true, silent = true, desc = 'Neotree focus or previous window' })
 
--- python REPL: auto terminal create or find existing terminal
+-- Custom python REPL: auto terminal create or find existing terminal
 local function get_or_open_terminal()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buftype == 'terminal' then
       local job_id = vim.b[buf].terminal_job_id
       if job_id then
-        print(job_id)
-        return job_id
+        return job_id, buf
       end
     end
   end
@@ -141,8 +140,15 @@ end
 -- Normal mode: run current line
 vim.keymap.set('n', '<CR>', function()
   if vim.bo.filetype ~= "python" then return end
-  local job_id = get_or_open_terminal()
+  local job_id, term_buf = get_or_open_terminal()
   local line = vim.fn.getline '.'
+  if term_buf then
+    local prompt_lines = vim.api.nvim_buf_get_lines(term_buf, -2, -1, false)
+    local last_line = prompt_lines[1] or ""
+    if last_line:find(">>>%s*$") then
+      line = line:gsub('^%s+', '')
+    end
+  end
   vim.fn.chansend(job_id, line .. '\r\n')
   vim.schedule(function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
@@ -156,14 +162,25 @@ end, { desc = 'Send current line to terminal python' })
 vim.keymap.set('v', '<CR>', function()
   if vim.bo.filetype ~= "python" then return end
   local bufnr = vim.api.nvim_get_current_buf()
-  local job_id = get_or_open_terminal()
+  local job_id, _ = get_or_open_terminal()
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'x', false)
   vim.schedule(function()
     local start_line = vim.fn.getpos("'<")[2] - 1
     local end_line = vim.fn.getpos("'>")[2]
     local lines = vim.api.nvim_buf_get_lines(bufnr, start_line, end_line, false)
+    -- Get minimal indent value and make it left-align
+    local min_indent = math.huge
     for _, line in ipairs(lines) do
-      vim.fn.chansend(job_id, line .. '\r\n')
+      if line:match('%S') then
+        local _, spaces = line:find('^%s*')
+        if spaces and spaces < min_indent then min_indent = spaces end
+      end
+    end
+    min_indent = min_indent == math.huge and 0 or min_indent
+    for _, line in ipairs(lines) do
+      local deindented = line
+      if min_indent > 0 then deindented = line:gsub('^' .. string.rep(' ', min_indent), '') end
+      vim.fn.chansend(job_id, deindented .. '\r\n')
     end
     vim.fn.chansend(job_id, '\r\n')
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
