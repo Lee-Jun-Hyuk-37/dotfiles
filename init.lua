@@ -110,7 +110,7 @@ end, {})
 vim.keymap.set('n', '<Space>E', function()
   vim.cmd('Neotree toggle')
   vim.cmd('wincmd =')
-end, { noremap = true, silent = true, desc = 'Neovim toggle and resize windows' })
+end, { noremap = true, silent = true, desc = 'Neotree toggle and resize windows' })
 -- Check if the current window's filetype is neo-tree, then act conditionally
 vim.keymap.set('n', '<Space>e', function()
   local buftype = vim.api.nvim_get_option_value('filetype', { buf = 0 })
@@ -1022,6 +1022,7 @@ require('lazy').setup({
               ['<C-f>'] = 'scroll_up',
               ['H'] = 'first_sibling',
               ['hh'] = 'toggle_hidden',
+              ['e'] = 'expand_all_nodes',
             },
           },
         },
@@ -1056,17 +1057,3 @@ require('lazy').setup({
     },
   },
 })
-
--- custom nvim python env setting
--- local python_env_file = vim.fn.getcwd() .. '/.python_env'
--- if vim.fn.filereadable(python_env_file) == 1 then
---   local python_path = vim.fn.readfile(python_env_file)[1]
---   require('lspconfig').pyright.setup {
---     settings = {
---       python = {
---         pythonPath = python_path,
---       },
---     },
---   }
---   vim.g.python3_host_prog = python_path
--- end
