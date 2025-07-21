@@ -163,26 +163,34 @@ vim.keymap.set('v', '<CR>', function()
   if vim.bo.filetype ~= "python" then return end
   local bufnr = vim.api.nvim_get_current_buf()
   local job_id, _ = get_or_open_terminal()
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'x', false)
+  local mode = vim.fn.mode()
+  local selection
+  if mode == 'v' or mode == 'V' then
+    local reg_backup = vim.fn.getreg('"')
+    vim.cmd('normal! ""y')
+    selection = vim.fn.getreg('"')
+    vim.fn.setreg('"', reg_backup)
+  else
+    selection = ""
+  end
+  local lines = {}
+  for line in selection:gmatch("([^\n]+)") do
+    table.insert(lines, line)
+  end
+  local min_indent = math.huge
+  for _, line in ipairs(lines) do
+    if line:match('%S') then
+      local _, spaces = line:find('^%s*')
+      if spaces and spaces < min_indent then min_indent = spaces end
+    end
+  end
+  min_indent = min_indent == math.huge and 0 or min_indent
+  for _, line in ipairs(lines) do
+    local deindented = (min_indent > 0) and line:gsub('^' .. string.rep(' ', min_indent), '') or line
+    vim.fn.chansend(job_id, deindented .. '\r\n')
+  end
+  vim.fn.chansend(job_id, '\r\n')
   vim.schedule(function()
-    local start_line = vim.fn.getpos("'<")[2] - 1
-    local end_line = vim.fn.getpos("'>")[2]
-    local lines = vim.api.nvim_buf_get_lines(bufnr, start_line, end_line, false)
-    -- Get minimal indent value and make it left-align
-    local min_indent = math.huge
-    for _, line in ipairs(lines) do
-      if line:match('%S') then
-        local _, spaces = line:find('^%s*')
-        if spaces and spaces < min_indent then min_indent = spaces end
-      end
-    end
-    min_indent = min_indent == math.huge and 0 or min_indent
-    for _, line in ipairs(lines) do
-      local deindented = line
-      if min_indent > 0 then deindented = line:gsub('^' .. string.rep(' ', min_indent), '') end
-      vim.fn.chansend(job_id, deindented .. '\r\n')
-    end
-    vim.fn.chansend(job_id, '\r\n')
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n>]], true, false, true), 't', false)
