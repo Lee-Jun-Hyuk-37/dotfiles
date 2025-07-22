@@ -188,9 +188,15 @@ vim.keymap.set('v', '<CR>', function()
     end
   end
   min_indent = min_indent == math.huge and 0 or min_indent
+  local prev_indent = min_indent
   for _, line in ipairs(lines) do
+    local curr_indent = #(line:match('^%s*'))
+    if curr_indent == min_indent and prev_indent > min_indent then
+      vim.fn.chansend(job_id, eol)
+    end
     local deindented = (min_indent > 0) and line:gsub('^' .. string.rep(' ', min_indent), '') or line
     vim.fn.chansend(job_id, deindented .. eol)
+    prev_indent = curr_indent
   end
   vim.fn.chansend(job_id, eol)
   local end_line = vim.fn.line("'>")
