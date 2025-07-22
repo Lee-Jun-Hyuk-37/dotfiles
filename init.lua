@@ -5,7 +5,7 @@ vim.keymap.set('t', 'jk', [[<C-\><C-n>]], { noremap = true })
 vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { noremap = true })
 
 -- easy python run
-vim.keymap.set('c', 'py', '!python %', { noremap = true })
+vim.keymap.set('c', 'py', '!python3 %', { noremap = true })
 
 -- easy directory move
 vim.keymap.set('c', 'C', 'cd %:p:h', { noremap = true })
@@ -135,7 +135,7 @@ local function get_or_open_terminal()
       end
     end
   end
-  vim.cmd 'sp | term python'
+  vim.cmd 'sp | term python3'
   vim.schedule(function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
   end)
