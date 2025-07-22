@@ -125,6 +125,7 @@ vim.keymap.set('n', '<Space>e', function()
 end, { noremap = true, silent = true, desc = 'Neotree focus or previous window' })
 
 -- Custom python REPL: auto terminal create or find existing terminal
+local eol = vim.fn.has('win32') == 1 and '\r\n' or '\n'
 local function get_or_open_terminal()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].buftype == 'terminal' then
@@ -152,7 +153,7 @@ vim.keymap.set('n', '<CR>', function()
       line = line:gsub('^%s+', '')
     end
   end
-  vim.fn.chansend(job_id, line .. '\r\n')
+  vim.fn.chansend(job_id, line .. eol)
   vim.schedule(function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
@@ -189,9 +190,9 @@ vim.keymap.set('v', '<CR>', function()
   min_indent = min_indent == math.huge and 0 or min_indent
   for _, line in ipairs(lines) do
     local deindented = (min_indent > 0) and line:gsub('^' .. string.rep(' ', min_indent), '') or line
-    vim.fn.chansend(job_id, deindented .. '\r\n')
+    vim.fn.chansend(job_id, deindented .. eol)
   end
-  vim.fn.chansend(job_id, '\r\n')
+  vim.fn.chansend(job_id, eol)
   local end_line = vim.fn.line("'>")
   vim.schedule(function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
