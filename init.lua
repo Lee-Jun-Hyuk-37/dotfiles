@@ -161,7 +161,6 @@ end, { desc = 'Send current line to terminal python' })
 -- Visual mode: run selected lines
 vim.keymap.set('v', '<CR>', function()
   if vim.bo.filetype ~= "python" then return end
-  local bufnr = vim.api.nvim_get_current_buf()
   local job_id, _ = get_or_open_terminal()
   local mode = vim.fn.mode()
   local selection
@@ -190,11 +189,13 @@ vim.keymap.set('v', '<CR>', function()
     vim.fn.chansend(job_id, deindented .. '\r\n')
   end
   vim.fn.chansend(job_id, '\r\n')
+  local end_line = vim.fn.line("'>")
   vim.schedule(function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n>]], true, false, true), 't', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
+    vim.api.nvim_win_set_cursor(0, {end_line, 1})
     vim.api.nvim_feedkeys('j', 'n', false)
   end)
 end, { desc = 'Send visual selection to terminal python' })
