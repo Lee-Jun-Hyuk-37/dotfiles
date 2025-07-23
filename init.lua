@@ -1082,6 +1082,18 @@ require('lazy').setup({
       end
     end,
   },
+  {
+    'sphamba/smear-cursor.nvim',
+    opts = {},
+    init = function()
+      -- enable by default
+      require('smear_cursor').setup {
+        stiffness = 0.9,
+        trailing_stiffness = 0.6,
+        distance_stop_animating = 0.5,
+      }
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
