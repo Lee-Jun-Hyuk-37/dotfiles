@@ -51,7 +51,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- H-M, L-M midpoint
-vim.keymap.set('n', 'HH', function()
+vim.keymap.set({ 'n', 'v' }, 'HH', function()
   vim.cmd 'normal! H'
   local high = vim.fn.line '.'
   vim.cmd 'normal! M'
@@ -59,7 +59,7 @@ vim.keymap.set('n', 'HH', function()
   local target = math.floor((high + mid) / 2)
   vim.cmd('normal! ' .. target .. 'G')
 end, { noremap = true, silent = true, desc = 'Move to H-M midpoint' })
-vim.keymap.set('n', 'LL', function()
+vim.keymap.set({ 'n', 'v' }, 'LL', function()
   vim.cmd 'normal! L'
   local low = vim.fn.line '.'
   vim.cmd 'normal! M'
