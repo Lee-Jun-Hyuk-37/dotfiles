@@ -26,22 +26,22 @@ vim.keymap.set('v', '<C-_>', 'gc',  { noremap = false, remap = true, desc = 'Tog
 -- save with ctr+s
 vim.keymap.set({ 'n', 'i', 'v' }, '<C-s>', '<Esc>:w<CR>', { noremap = true, silent = true })
 
--- half page up keymap
-vim.keymap.set({ 'n', 'v' }, '<C-f>', '<C-u>', { noremap = true, silent = true })
-vim.api.nvim_create_autocmd({ 'BufEnter', 'WinEnter', 'FileType' }, {
-  callback = function(args)
-    vim.keymap.set({ 'n', 'i' }, '<C-f>', '<C-u>', {
-      buffer = args.buf,
-      noremap = true,
-      silent = true,
-    })
-  end,
-})
+-- half page up keymap: deprecated due to neoscroll
+-- vim.keymap.set({ 'n', 'v' }, '<C-f>', '<C-u>', { noremap = true, silent = true })
+-- vim.api.nvim_create_autocmd({ 'BufEnter', 'WinEnter', 'FileType' }, {
+--   callback = function(args)
+--     vim.keymap.set({ 'n', 'i' }, '<C-f>', '<C-u>', {
+--       buffer = args.buf,
+--       noremap = true,
+--       silent = true,
+--     })
+--   end,
+-- })
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'lazy', 'mason' },
   callback = function(args)
     vim.schedule(function()
-      vim.keymap.set({ 'n', 'i' }, '<C-f>', '<C-u>', {
+      vim.keymap.set({ 'n', 'i' }, '<C-f>', function() require('neoscroll').ctrl_u({ duration = 12.5; easing = 'cubic' }) end, {
         buffer = args.buf,
         noremap = true,
         silent = true,
@@ -1053,6 +1053,33 @@ require('lazy').setup({
     event = 'InsertEnter',
     config = function()
       require('nvim-autopairs').setup {}
+    end,
+  },
+  {
+    'karb94/neoscroll.nvim',
+    event = 'VimEnter',
+    config = function()
+      require('neoscroll').setup {
+        mappings = { '<C-u>', '<C-d>', '<C-b>', '<C-f>', 'zt', 'zz', 'zb' },
+        hide_cursor = true,
+        stop_eof = true,
+        respect_scrolloff = false,
+        cursor_scrolls_alone = true,
+        duration_multiplier = 0.05,
+        easing = 'cubic',
+        pre_hook = nil,
+        post_hook = nil,
+        performance_mode = true,
+        ignored_events = { 'WinScrolled', 'CursorMoved' },
+      }
+      local neoscroll = require('neoscroll')
+      local keymap = {
+        ["<C-f>"] = function() neoscroll.ctrl_u({ duration = 12.5; easing = 'cubic' }) end;
+      }
+      local modes = { 'n', 'v', 'x' }
+      for key, func in pairs(keymap) do
+          vim.keymap.set(modes, key, func)
+      end
     end,
   },
 }, {
