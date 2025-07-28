@@ -14,7 +14,7 @@ vim.keymap.set('c', 'C', 'cd %:p:h', { noremap = true })
 vim.keymap.set('c', 'E', 'Ex', { noremap = true })
 
 -- easy cursor open
-vim.keymap.set('c', 'cu', '!cursor . && cursor %', { noremap = true })
+vim.keymap.set('c', 'cu', '!cursor .', { noremap = true })
 
 -- tree style
 vim.g.netrw_liststyle = 3
