@@ -210,6 +210,11 @@ vim.keymap.set('v', '<CR>', function()
   end)
 end, { desc = 'Send visual selection to terminal python' })
 
+-- Open unsupported format in exteranl program
+vim.api.nvim_create_user_command('O', function()
+  vim.cmd '!start "" "%"'
+end, {})
+
 ---------- jh custom keymap end ----------
 
 -- Set tab as 4-spaces always
