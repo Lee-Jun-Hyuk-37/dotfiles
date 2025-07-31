@@ -69,25 +69,25 @@ vim.keymap.set({ 'n', 'v' }, 'LL', function()
 end, { noremap = true, silent = true, desc = 'Move to L-M midpoint' })
 
 -- Visual markers for fast move
-vim.fn.sign_define("HMLMark", { text = "=>",  texthl = "DiagnosticHint", numhl = "" })
-local function update_hml_signs()
-  local bufnr = vim.api.nvim_get_current_buf()
-  vim.fn.sign_unplace("HMLGroup", { buffer = bufnr })
-  local topline = vim.fn.line("w0")
-  local botline = vim.fn.line("w$")
-  local height = botline - topline + 1
-  local midline = topline + math.floor(height / 2)
-  local hh = math.floor((topline + midline) / 2)
-  local ll = math.floor((botline + midline) / 2)
-  for _, lnum in ipairs({ topline, midline, botline, hh, ll }) do
-    pcall(function()
-      vim.fn.sign_place(0, "HMLGroup", "HMLMark", bufnr, { lnum = lnum, priority = 10 })
-    end)
-  end
-end
-vim.api.nvim_create_autocmd({ "CursorMoved", "WinScrolled", "BufWinEnter" }, {
-  callback = update_hml_signs,
-})
+-- vim.fn.sign_define("HMLMark", { text = "=>",  texthl = "DiagnosticHint", numhl = "" })
+-- local function update_hml_signs()
+--   local bufnr = vim.api.nvim_get_current_buf()
+--   vim.fn.sign_unplace("HMLGroup", { buffer = bufnr })
+--   local topline = vim.fn.line("w0")
+--   local botline = vim.fn.line("w$")
+--   local height = botline - topline + 1
+--   local midline = topline + math.floor(height / 2)
+--   local hh = math.floor((topline + midline) / 2)
+--   local ll = math.floor((botline + midline) / 2)
+--   for _, lnum in ipairs({ topline, midline, botline, hh, ll }) do
+--     pcall(function()
+--       vim.fn.sign_place(0, "HMLGroup", "HMLMark", bufnr, { lnum = lnum, priority = 10 })
+--     end)
+--   end
+-- end
+-- vim.api.nvim_create_autocmd({ "CursorMoved", "WinScrolled", "BufWinEnter" }, {
+--   callback = update_hml_signs,
+-- })
 
 -- for useful terminal
 vim.api.nvim_create_user_command('T', function()
