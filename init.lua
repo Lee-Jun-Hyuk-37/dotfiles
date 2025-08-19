@@ -260,6 +260,9 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 vim.opt.mouse = 'a'
 vim.opt.showmode = false
+vim.opt.wrap = false
+vim.opt.sidescroll = 1
+vim.opt.sidescrolloff = 5
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
