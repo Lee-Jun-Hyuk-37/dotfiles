@@ -1030,11 +1030,12 @@ require('lazy').setup({
       dashboard.section.header.val = require('ascii').art.text.neovim.sharp
       dashboard.section.buttons.val = {}
       local footers = {
-        '🏒 Head up and play smart 🧠',
-        '👀 Eyes on the road 🛣️',
-        '🍃 Wait for the wind ⏳',
-        '🧱 Power of consistency 📈',
-        '🌈 Positive thinking 😄',
+        'Head up and play smart',
+        'Eyes on the road',
+        'Wait for the wind',
+        'Power of consistency',
+        'Positive thinking',
+        'Always stay humble, and learn from everyone as if they were your teacher'
       }
       math.randomseed(os.time())
       dashboard.section.footer.val = footers[math.random(1, #footers)]
