@@ -158,11 +158,59 @@ local function get_or_open_terminal()
       end
     end
   end
-  vim.cmd 'sp | term python'
+  local launched_ipy = false
+  local term_cmd = nil
+  if vim.fn.executable 'ipython' == 1 then
+    term_cmd = 'ipython'
+    launched_ipy = true
+  elseif vim.fn.executable 'python' == 1 then
+    vim.fn.system({ 'python', '-c', 'import IPython' })
+    if vim.v.shell_error == 0 then
+      term_cmd = 'python -m IPython'
+      launched_ipy = true
+    else
+      term_cmd = 'python'
+      launched_ipy = false
+    end
+  elseif vim.fn.executable 'py' == 1 then
+    vim.fn.system({ 'py', '-c', 'import IPython' })
+    if vim.v.shell_error == 0 then
+      term_cmd = 'py -m IPython'
+      launched_ipy = true
+    else
+      term_cmd = 'py'
+      launched_ipy = false
+    end
+  else
+    term_cmd = 'python'
+    launched_ipy = false
+  end
+  vim.cmd('sp | term ' .. term_cmd)
   vim.schedule(function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
   end)
-  return vim.b.terminal_job_id
+  local new_buf = vim.api.nvim_get_current_buf()
+  vim.b.terminal_is_ipython = launched_ipy
+  return vim.b.terminal_job_id, new_buf
+end
+local function is_ipython_buf(buf)
+  if buf and vim.b[buf] and type(vim.b[buf].terminal_is_ipython) ~= 'nil' then
+    return vim.b[buf].terminal_is_ipython
+  end
+  if buf then
+    local prompt_lines = vim.api.nvim_buf_get_lines(buf, -2, -1, false)
+    local last_line = prompt_lines[1] or ''
+    if last_line:find('In %[%n+%]:%s*$') or last_line:find('In %[%d+%]:%s*$') then
+      return true
+    end
+  end
+  return false
+end
+local function get_repl_eol(term_buf)
+  if is_ipython_buf(term_buf) then
+    return '\n'
+  end
+  return eol
 end
 -- Normal mode: run current line
 vim.keymap.set('n', '<CR>', function()
@@ -172,11 +220,12 @@ vim.keymap.set('n', '<CR>', function()
   if term_buf then
     local prompt_lines = vim.api.nvim_buf_get_lines(term_buf, -2, -1, false)
     local last_line = prompt_lines[1] or ""
-    if last_line:find(">>>%s*$") then
+    if last_line:find(">>>%s*$") or last_line:find("In %[%d+%]:%s*$") or last_line:find("%s*%.%.%.:%s*$") then
       line = line:gsub('^%s+', '')
     end
   end
-  vim.fn.chansend(job_id, line .. eol)
+  local repl_eol = get_repl_eol(term_buf)
+  vim.fn.chansend(job_id, line .. repl_eol)
   vim.schedule(function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
@@ -184,11 +233,12 @@ vim.keymap.set('n', '<CR>', function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
     vim.api.nvim_feedkeys('j', 'n', false)
   end)
-end, { desc = 'Send current line to terminal python' })
+end, { desc = 'Send current line to terminal ipython' })
 -- Visual mode: run selected lines
 vim.keymap.set('v', '<CR>', function()
   if vim.bo.filetype ~= "python" then return end
   local job_id, _ = get_or_open_terminal()
+  local repl_eol = get_repl_eol(_)
   local mode = vim.fn.mode()
   local selection
   if mode == 'v' or mode == 'V' then
@@ -215,13 +265,13 @@ vim.keymap.set('v', '<CR>', function()
   for _, line in ipairs(lines) do
     local curr_indent = #(line:match('^%s*'))
     if curr_indent == min_indent and prev_indent > min_indent then
-      vim.fn.chansend(job_id, eol)
+      vim.fn.chansend(job_id, repl_eol)
     end
     local deindented = (min_indent > 0) and line:gsub('^' .. string.rep(' ', min_indent), '') or line
-    vim.fn.chansend(job_id, deindented .. eol)
+    vim.fn.chansend(job_id, deindented .. repl_eol)
     prev_indent = curr_indent
   end
-  vim.fn.chansend(job_id, eol)
+  vim.fn.chansend(job_id, repl_eol)
   local end_line = vim.fn.line("'>")
   vim.schedule(function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
@@ -231,7 +281,7 @@ vim.keymap.set('v', '<CR>', function()
     vim.api.nvim_win_set_cursor(0, {end_line, 1})
     vim.api.nvim_feedkeys('j', 'n', false)
   end)
-end, { desc = 'Send visual selection to terminal python' })
+end, { desc = 'Send visual selection to terminal ipython' })
 
 -- Open unsupported format in exteranl program
 vim.api.nvim_create_user_command('O', function()
