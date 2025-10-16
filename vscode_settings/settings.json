@@ -1,3 +1,5 @@
+// Preferences: Open User Settings (JSON)
+// Note: keybindings.json setting is required!
 {
     "extensions.experimental.affinity": {
         "asvetliakov.vscode-neovim": 1
