@@ -1032,10 +1032,9 @@ require('lazy').setup({
       local footers = {
         'Head up and play smart',
         'Eyes on the road',
-        'Wait for the wind',
-        'Power of consistency',
-        'Positive thinking',
-        'Always stay humble, and learn from everyone as if they were your teacher'
+        'Wait for the wind, Power of consistency, Positive thinking',
+        'Always stay humble, and learn from everyone as if they were your teacher',
+        'You don\'t need more time. You need more focus'
       }
       math.randomseed(os.time())
       dashboard.section.footer.val = footers[math.random(1, #footers)]
