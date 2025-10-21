@@ -249,6 +249,27 @@ vim.keymap.set('v', '<CR>', function()
   else
     selection = ""
   end
+  -- If IPython, use bracketed paste to avoid staircase indentation
+  if is_ipython_buf(_) then
+    local paste_start = '\x1b[200~'
+    local paste_end = '\x1b[201~'
+    local end_line = vim.fn.line("'>")
+    if selection ~= "" and not selection:match('\n$') then
+      selection = selection .. repl_eol
+    end
+    vim.fn.chansend(job_id, paste_start)
+    vim.fn.chansend(job_id, selection)
+    vim.fn.chansend(job_id, paste_end .. repl_eol)
+    vim.schedule(function()
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>j', true, false, true), 'n', false)
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n>]], true, false, true), 't', false)
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-w>k', true, false, true), 'n', false)
+      vim.api.nvim_win_set_cursor(0, {end_line, 1})
+      vim.api.nvim_feedkeys('j', 'n', false)
+    end)
+    return
+  end
   local lines = {}
   for line in selection:gmatch("([^\n]+)") do
     table.insert(lines, line)
