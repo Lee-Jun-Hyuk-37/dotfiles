@@ -435,6 +435,18 @@ require('lazy').setup({
       },
     },
   },
+  { -- LaTeX core workflow: build via latexmk and view via SumatraPDF
+    'lervag/vimtex',
+    ft = { 'tex', 'plaintex' },
+    init = function()
+      vim.g.vimtex_view_method = 'general'
+      vim.g.vimtex_compiler_progname = 'nvr'
+      vim.g.vimtex_compiler_latexmk = {
+        build_dir = 'build',
+        options = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '-shell-escape' },
+      }
+    end,
+  },
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
@@ -604,13 +616,14 @@ require('lazy').setup({
         return
       end
       require('mason-lspconfig').setup {
-        ensure_installed = { 'pyright' },
+        ensure_installed = { 'pyright', 'texlab' },
         automatic_installation = true,
       }
       require('mason-tool-installer').setup {
         ensure_installed = {
           'ruff',
           'black',
+          'latexindent',
         },
         automatic_installation = true,
       }
@@ -769,6 +782,14 @@ require('lazy').setup({
         -- clangd = {},
         -- gopls = {},
         pyright = {},
+        texlab = {
+          settings = {
+            texlab = {
+              build = { onSave = false },
+              forwardSearch = { executable = '', args = {} },
+            },
+          },
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -813,11 +834,12 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'black',
         'ruff',
+        'latexindent',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
-        ensure_installed = { 'pyright' }, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        ensure_installed = { 'pyright', 'texlab' }, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_installation = true,
         handlers = {
           function(server_name)
@@ -868,6 +890,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         python = { 'ruff_fix', 'black' },
+        latex = { 'latexindent' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -911,6 +934,8 @@ require('lazy').setup({
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-nvim-lsp-signature-help',
+      'hrsh7th/cmp-omni',
+      'kdheepak/cmp-latex-symbols',
     },
     config = function()
       -- See `:help cmp`
@@ -990,6 +1015,17 @@ require('lazy').setup({
           { name = 'nvim_lsp_signature_help' },
         },
       }
+      -- LaTeX/BibTeX specific completion sources
+      cmp.setup.filetype({ 'tex', 'plaintex', 'bib' }, {
+        sources = cmp.config.sources({
+          { name = 'omni' },
+          { name = 'latex_symbols' },
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'path' },
+          { name = 'nvim_lsp_signature_help' },
+        }),
+      })
     end,
   },
 
@@ -1067,9 +1103,9 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python', 'latex', 'bibtex' },
       -- Autoinstall languages that are not installed
-      auto_install = true,
+      auto_install = false,
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
