@@ -443,7 +443,7 @@ require('lazy').setup({
       vim.g.vimtex_compiler_progname = 'nvr'
       vim.g.vimtex_compiler_latexmk = {
         build_dir = 'build',
-        options = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '-shell-escape' },
+        options = { '-xelatex', '-interaction=nonstopmode', '-synctex=1', '-shell-escape' },
       }
     end,
   },
