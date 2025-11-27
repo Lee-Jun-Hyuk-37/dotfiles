@@ -448,7 +448,7 @@ require('lazy').setup({
       vim.g.vimtex_compiler_latexmk_engines = {
         _ = '-xelatex',
       }
-      vim.g.vimtex_syntax_packages = { amsmath = { enabled = 0 } }
+      vim.g.vimtex_syntax_packages = { amsmath = { load = 0 } }
     end,
   },
   { -- Useful plugin to show you pending keybinds.
