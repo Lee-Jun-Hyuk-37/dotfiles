@@ -39,8 +39,18 @@
 - Screenshot setting
 - Scone
 
-# Sumatrapdf keyboard shortcut setting
+# Sumatrapdf (<= v3.6)
+InverseSearchCmdLine = nvr.exe --remote-silent +"%l" "%f"
+EnableTeXEnhancements = true
 Shortcuts [
+	[
+		Cmd = CmdScrollDown 5
+		Key = j
+	]
+	[
+		Cmd = CmdScrollUp 5
+		Key = k
+	]
 	[
 		Cmd = CmdScrollDownHalfPage
 		Key = d
@@ -51,15 +61,11 @@ Shortcuts [
 	]
 	[
 		Cmd = CmdGoToFirstPage
-		Key = gg
+		Key = g
 	]
 	[
 		Cmd = CmdGoToLastPage
 		Key = G
-	]
-	[
-		Cmd = CmdTranslateSelectionWithGoogle
-		Key = t
 	]
 	[
 		Cmd = CmdNextTab
@@ -70,3 +76,4 @@ Shortcuts [
 		Key = Left
 	]
 ]
+SmoothScroll = true
