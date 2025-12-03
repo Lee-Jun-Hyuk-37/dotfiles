@@ -8,3 +8,65 @@
 02 00 00 00 1D 00 3A 00
 00 00 00 00
 ```
+
+# New PC setting
+- Wallpaper
+- Chrome setting
+- Teamviewer
+- Kakaotalk
+- Everything
+- Webcam
+- Zotero
+- nvim setting
+    - scoop
+    - nvim
+    - init.lua (AppData/Local/nvim/init.lua)
+    - ripgrep
+    - gcc
+    - nodejs
+    - JetbrainsMono Nerd Font
+    - TeX Live (scheme-small with korean and bibtex option selected)
+    - nvr (pip install neovim-remote in default python env)
+    - sumatrapdf (EnableTeXEnhancements = true) (`nvr.exe --remote-silent +"%l" "%f"` in inverse search setting)
+    - latexmk (tlmgr install latexmk)
+- Git setting
+- Cursor
+- Miniconda
+- Zoom
+- ScreentoGif
+- Bandizip
+- Printer connect
+- Screenshot setting
+- Scone
+
+# Sumatrapdf keyboard shortcut setting
+Shortcuts [
+	[
+		Cmd = CmdScrollDownHalfPage
+		Key = d
+	]
+	[
+		Cmd = CmdScrollUpHalfPage
+		Key = f
+	]
+	[
+		Cmd = CmdGoToFirstPage
+		Key = gg
+	]
+	[
+		Cmd = CmdGoToLastPage
+		Key = G
+	]
+	[
+		Cmd = CmdTranslateSelectionWithGoogle
+		Key = t
+	]
+	[
+		Cmd = CmdNextTab
+		Key = Right
+	]
+	[
+		Cmd = CmdPrevTab
+		Key = Left
+	]
+]
