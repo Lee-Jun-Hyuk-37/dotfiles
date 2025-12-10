@@ -533,8 +533,15 @@ require('lazy').setup({
       require('telescope').setup {
         defaults = {
           mappings = {
-            -- i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-            n = { ['dd'] = require('telescope.actions').delete_buffer },
+            i = {
+              -- ['<c-enter>'] = 'to_fuzzy_refine',
+              -- ['<C-f>'] = false,
+              ['<C-f>'] = require('telescope.actions').preview_scrolling_up,
+            },
+            n = {
+              ['dd'] = require('telescope.actions').delete_buffer,
+              ['<C-f>'] = require('telescope.actions').preview_scrolling_up,
+            },
           },
         },
         -- pickers = {}
