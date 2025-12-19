@@ -11,7 +11,7 @@ vim.keymap.set('c', 'py', '!python %', { noremap = true })
 vim.keymap.set('c', 'C', 'cd %:p:h', { noremap = true })
 
 -- netrw
-vim.keymap.set('c', 'E', 'Ex', { noremap = true })
+vim.keymap.set('c', 'E', '!explorer .', { noremap = true })
 
 -- easy cursor open
 vim.keymap.set('c', 'cu', '!cursor .', { noremap = true })
