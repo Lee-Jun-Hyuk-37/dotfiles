@@ -124,13 +124,13 @@ vim.keymap.set('n', '[c', function()
 end, { expr = true, desc = 'prev_hunk' })
 
 -- easy git diff
-vim.api.nvim_create_user_command('Gitdiff', function()
-  vim.cmd 'vs'
-  vim.cmd 'Gitsigns show'
-  vim.cmd 'diffthis'
-  vim.cmd 'wincmd h'
-  vim.cmd 'diffthis'
-end, {})
+vim.api.nvim_create_user_command("Gitdiff", function(opts)
+  local gs = require("gitsigns")
+  local rev = opts.args ~= "" and opts.args or nil
+  gs.diffthis(rev)
+end, {
+  nargs = "?", -- optional 1 arg
+})
 
 -- Neotree open/close and focus/unfocus
 vim.keymap.set('n', '<Space>E', function()
