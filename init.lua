@@ -1259,6 +1259,30 @@ require('lazy').setup({
     cmd = { 'LiveServerStart', 'LiveServerStop' },
     config = true
   },
+  {
+    "linux-cultist/venv-selector.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-telescope/telescope.nvim",
+    },
+    ft = "python",
+    keys = {
+      { "<leader>v", "<cmd>VenvSelect<cr>" },
+    },
+    opts = {
+      search = {},
+      options = {}
+    },
+    config = function(_, opts)
+      if vim.fn.executable("fd") == 0 then
+        vim.notify(
+          "[venv-selector] `fd` is not installed. Refer to https://github.com/sharkdp/fd",
+          vim.log.levels.WARN
+        )
+      end
+      require("venv-selector").setup(opts)
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the

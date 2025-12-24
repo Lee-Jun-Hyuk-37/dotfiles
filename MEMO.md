@@ -29,6 +29,7 @@
     - nvr (pip install neovim-remote in default python env)
     - sumatrapdf (EnableTeXEnhancements = true) (`nvr.exe --remote-silent +"%l" "%f"` in inverse search setting)
     - latexmk (tlmgr install latexmk)
+    - fd (scoop install fd) (for venv-selector)
 - Git setting
 - Cursor
 - Miniconda
