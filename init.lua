@@ -10,11 +10,14 @@ vim.keymap.set('c', 'py', '!python %', { noremap = true })
 -- easy directory move
 vim.keymap.set('c', 'C', 'cd %:p:h', { noremap = true })
 
--- netrw
+-- easy window explorer open
 vim.keymap.set('c', 'E', '!explorer .', { noremap = true })
 
 -- easy cursor open
 vim.keymap.set('c', 'cu', '!cursor .', { noremap = true })
+
+-- easy tabnew
+vim.keymap.set('c', 'tn', 'tabnew', { noremap = true })
 
 -- tree style
 vim.g.netrw_liststyle = 3
@@ -1249,6 +1252,12 @@ require('lazy').setup({
     ft = { 'markdown' },
     cmd = { 'MarkdownPreview', 'MarkdownPreviewStop', 'MarkdownPreviewToggle' },
     build = 'cd app && npm install',
+  },
+  {
+    'barrett-ruth/live-server.nvim',
+    build = 'npm add -g live-server',
+    cmd = { 'LiveServerStart', 'LiveServerStop' },
+    config = true
   },
 }, {
   ui = {
