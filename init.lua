@@ -8,10 +8,14 @@ vim.keymap.set('t', 'kj', [[<C-\><C-n>]], { noremap = true })
 vim.keymap.set('c', 'py', '!python %', { noremap = true })
 
 -- easy directory move
-vim.keymap.set('c', 'C', 'cd %:p:h', { noremap = true })
+vim.api.nvim_create_user_command('C', function()
+  vim.cmd 'cd %:p:h'
+end, {})
 
 -- easy window explorer open
-vim.keymap.set('c', 'E', '!explorer .', { noremap = true })
+vim.api.nvim_create_user_command('E', function()
+  vim.cmd '!explorer .'
+end, {})
 
 -- easy cursor open
 vim.keymap.set('c', 'cu', '!cursor .', { noremap = true })
@@ -147,6 +151,7 @@ vim.keymap.set('n', '<Space>e', function()
     vim.cmd('wincmd p')
   else
     vim.cmd('Neotree focus')
+    vim.cmd('wincmd =')
   end
 end, { noremap = true, silent = true, desc = 'Neotree focus or previous window' })
 
@@ -563,7 +568,17 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', function()
+        require('telescope.builtin').find_files {
+          hidden = true,
+          find_command = {
+            'fd',
+            '--type', 'f',
+            '--hidden',
+            '--exclude', '.git',
+          },
+        }
+      end, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -1281,6 +1296,34 @@ require('lazy').setup({
         )
       end
       require("venv-selector").setup(opts)
+    end,
+  },
+  {
+    'nanozuki/tabby.nvim',
+    config = function()
+      -- vim.o.showtabline = 2
+      require('tabby').setup({
+        line = function(line)
+          return {
+            {
+              { '  ', hl = 'TabLine' },
+              line.sep('', 'TabLine', 'TabLineFill'),
+            },
+            line.tabs().foreach(function(tab)
+              local hl = tab.is_current() and 'TabLineSel' or 'TabLine'
+              return {
+                line.sep('', hl, 'TabLineFill'),
+                tab.number(),
+                tab.name(),
+                line.sep('', hl, 'TabLineFill'),
+                hl = hl,
+                margin = ' ',
+              }
+            end),
+            hl = 'TabLineFill',
+          }
+        end,
+      })
     end,
   },
 }, {
