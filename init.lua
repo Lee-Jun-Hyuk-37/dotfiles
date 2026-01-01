@@ -1301,7 +1301,7 @@ require('lazy').setup({
   {
     'nanozuki/tabby.nvim',
     config = function()
-      -- vim.o.showtabline = 2
+      vim.o.showtabline = 2
       require('tabby').setup({
         line = function(line)
           return {
