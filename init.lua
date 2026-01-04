@@ -1078,6 +1078,9 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'tokyonight-night'
+      vim.opt.laststatus = 3
+      vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#3b4261' })
+      vim.opt.fillchars:append({ horiz = '─', horizup = '┴', horizdown = '┬', vert = '│', verthoriz = '┼' })
     end,
   },
 
@@ -1317,6 +1320,17 @@ require('lazy').setup({
                 tab.name(),
                 line.sep('', hl, 'TabLineFill'),
                 hl = hl,
+                margin = ' ',
+              }
+            end),
+            line.spacer(),
+            line.wins_in_tab(line.api.get_current_tab()).foreach(function(win)
+              return {
+                line.sep('', 'Tabline', 'TablineFill'),
+                win.is_current() and '' or '',
+                win.buf_name(),
+                line.sep('', 'Tabline', 'TablineFill'),
+                hl = 'Tabline',
                 margin = ' ',
               }
             end),
