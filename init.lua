@@ -319,8 +319,6 @@ vim.api.nvim_create_user_command('O', function()
 end, {})
 
 -- last.vim Session save and load
-vim.o.shada = ""
-vim.o.shadafile = "NONE"
 vim.opt.sessionoptions = {
   "buffers", "curdir", "folds", "help", "tabpages", "winsize", "winpos", "terminal", "globals",
 }
