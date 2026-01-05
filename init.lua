@@ -142,6 +142,7 @@ end, {
 -- Neotree open/close and focus/unfocus
 vim.keymap.set('n', '<Space>E', function()
   vim.cmd('Neotree toggle')
+  vim.cmd('wincmd p')
   vim.cmd('wincmd =')
 end, { noremap = true, silent = true, desc = 'Neotree toggle and resize windows' })
 -- Check if the current window's filetype is neo-tree, then act conditionally
