@@ -602,10 +602,10 @@ require('lazy').setup({
         require('telescope.builtin').find_files {
           hidden = true,
           find_command = {
-            'fd',
-            '--type', 'f',
+            'rg',
+            '--files',
             '--hidden',
-            '--exclude', '.git',
+            '--glob', '!.git/*',
           },
         }
       end, { desc = '[S]earch [F]iles' })
