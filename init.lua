@@ -317,6 +317,36 @@ vim.api.nvim_create_user_command('O', function()
   vim.cmd '!start "" "%"'
 end, {})
 
+-- last.vim Session save and load
+vim.o.shada = ""
+vim.o.shadafile = "NONE"
+vim.opt.sessionoptions = {
+  "buffers", "curdir", "folds", "help", "tabpages", "winsize", "winpos", "terminal", "globals",
+}
+local session_dir = vim.fn.stdpath("state") .. "/sessions"
+local last_session = session_dir .. "/last.vim"
+local function ensure_session_dir()
+  if vim.fn.isdirectory(session_dir) == 0 then
+    vim.fn.mkdir(session_dir, "p")
+  end
+end
+local function save_last()
+  if vim.fn.getcmdwintype() ~= "" then return end
+  ensure_session_dir()
+  pcall(vim.cmd, "silent! mksession! " .. vim.fn.fnameescape(last_session))
+end
+local function load_last()
+  if vim.fn.filereadable(last_session) == 0 then
+    vim.notify("[session] last.vim not found: " .. last_session, vim.log.levels.WARN)
+    return
+  end
+  pcall(vim.cmd, "silent! source " .. vim.fn.fnameescape(last_session))
+end
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = save_last,
+})
+vim.api.nvim_create_user_command("L", load_last, { desc = "Load last session (last.vim)" })
+
 ---------- jh custom keymap end ----------
 
 -- Set tab as 4-spaces always
@@ -1276,30 +1306,6 @@ require('lazy').setup({
     build = 'npm add -g live-server',
     cmd = { 'LiveServerStart', 'LiveServerStop' },
     config = true
-  },
-  {
-    "linux-cultist/venv-selector.nvim",
-    dependencies = {
-      "neovim/nvim-lspconfig",
-      "nvim-telescope/telescope.nvim",
-    },
-    ft = "python",
-    keys = {
-      { "<leader>v", "<cmd>VenvSelect<cr>" },
-    },
-    opts = {
-      search = {},
-      options = {}
-    },
-    config = function(_, opts)
-      if vim.fn.executable("fd") == 0 then
-        vim.notify(
-          "[venv-selector] `fd` is not installed. Refer to https://github.com/sharkdp/fd",
-          vim.log.levels.WARN
-        )
-      end
-      require("venv-selector").setup(opts)
-    end,
   },
   {
     'nanozuki/tabby.nvim',
