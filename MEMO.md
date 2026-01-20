@@ -34,6 +34,7 @@
 - Zoom
 - ScreentoGif
 - Bandizip
+- ezpdf
 - Printer connect
 - Screenshot setting
 - Scone
