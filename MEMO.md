@@ -12,7 +12,9 @@
 # New PC setting
 - Wallpaper
 - Chrome setting
-- Teamviewer
+    - Vimium C
+    - chrome://settings/content/pdfDocuments
+- Rustdesk
 - Kakaotalk
 - Everything
 - Webcam
