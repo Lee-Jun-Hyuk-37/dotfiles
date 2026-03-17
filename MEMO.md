@@ -17,10 +17,12 @@
 - Rustdesk
 - Kakaotalk
 - Everything
+- Tailscale
+- sshd install and setting
 - Webcam
 - nvim setting
     - scoop
-    - nvim
+    - nvim (install from web)
     - init.lua (AppData/Local/nvim/init.lua)
     - ripgrep
     - gcc
@@ -40,6 +42,22 @@
 - Printer connect
 - Screenshot setting
 - Scone
+
+# $PROFILE modify for powershell speed optimization
+- ~\Documents\WindowsPowerShell\profile.ps1
+```
+function Initialize-Conda {
+    if (Test-Path "C:\Users\jun_hyuk\miniconda3\Scripts\conda.exe") {
+	(& "C:\Users\jun_hyuk\miniconda3\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | Where-Object { $_ } | Invoke-Expression
+    }
+}
+
+function conda {
+    Remove-Item function:conda -ErrorAction SilentlyContinue
+    Initialize-Conda
+    conda @Args
+}
+```
 
 # Sumatrapdf (<= v3.6)
 InverseSearchCmdLine = nvr.exe --remote-silent +"%l" "%f"
