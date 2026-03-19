@@ -14,7 +14,6 @@
 - Chrome setting
     - Vimium C
     - chrome://settings/content/pdfDocuments
-- Rustdesk
 - Kakaotalk
 - Everything
 - Tailscale
